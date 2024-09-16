@@ -1,15 +1,10 @@
 """Tests standard tap features using the built-in SDK tests library."""
 
-import datetime
-
 from singer_sdk.testing import get_tap_test_class
 
 from govdata.tap import TapNarodniKatalog
 
-SAMPLE_CONFIG = {
-    "start_date": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%d"),
-    # TODO: Initialize minimal tap config
-}
+SAMPLE_CONFIG = {"iris": "https://data.gov.cz/zdroj/datové-sady/00025593/790624c7263aca615ce9ddd24e7db464"}
 
 
 # Run standard built-in tap tests from the SDK:
