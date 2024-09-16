@@ -1,131 +1,66 @@
 # tap-narodnikatalog
 
-`tap-narodnikatalog` is a Singer tap for NarodniKatalog.
+This tap is designed to interface with the "NarodniKatalog" (data.gov.cz), the national catalog of open data
+in the Czech Republic. This tap uses the Singer SDK to extract datasets published in this catalog,
+leveraging the power of GraphQL to query and retrieve the data efficiently.
 
-Built with the [Meltano Tap SDK](https://sdk.meltano.com) for Singer Taps.
+## What the Tap Downloads
 
-<!--
+When using this tap, you provide a list of `IRIs` (Internationalized Resource Identifiers) corresponding
+to the datasets you are interested in. The tap then connects to the `NarodniKatalog`,
+and retrieves metadata about these datasets.
 
-Developer TODO: Update the below as needed to correctly describe the install procedure. For instance, if you do not have a PyPi repo, or if you want users to directly install from your git repo, you can modify this step as appropriate.
+- Data Analysts and Researchers: Who need to access structured data from the Czech Republic's open data portal
+for analysis or research purposes.
+- Developers and Data Engineers: Who want to integrate open data from NarodniKatalog into their data pipelines
+for ETL (Extract, Transform, Load) processes.
+- Policy Makers and Public Officials: Who need up-to-date data to inform decision-making and policy development.
 
-## Installation
-
-Install from PyPi:
-
-```bash
-pipx install tap-narodnikatalog
-```
-
-Install from GitHub:
-
-```bash
-pipx install git+https://github.com/ORG_NAME/tap-narodnikatalog.git@main
-```
-
--->
-
-## Configuration
-
-### Accepted Config Options
-
-<!--
-Developer TODO: Provide a list of config options accepted by the tap.
-
-This section can be created by copy-pasting the CLI output from:
-
-```
-tap-narodnikatalog --about --format=markdown
-```
--->
-
-A full list of supported settings and capabilities for this
-tap is available by running:
-
-```bash
-tap-narodnikatalog --about
-```
-
-### Configure using environment variables
-
-This Singer tap will automatically import any environment variables within the working directory's
-`.env` if the `--config=ENV` is provided, such that config values will be considered if a matching
-environment variable is set either in the terminal context or in the `.env` file.
-
-### Source Authentication and Authorization
-
-<!--
-Developer TODO: If your tap requires special access on the source system, or any special authentication requirements, provide those here.
--->
+By using this tap, you can easily extract valuable datasets from the NarodniKatalog and integrate them into your
+data workflow, enabling data-driven insights and decision-making.
 
 ## Usage
 
-You can easily run `tap-narodnikatalog` by itself or in a pipeline using [Meltano](https://meltano.com/).
+### Direct Usage
 
-### Executing the Tap Directly
-
-```bash
-tap-narodnikatalog --version
-tap-narodnikatalog --help
-tap-narodnikatalog --config CONFIG --discover > ./catalog.json
-```
-
-## Developer Resources
-
-Follow these instructions to contribute to this project.
-
-### Initialize your Development Environment
+You can install this tap after cloning the repository by running:
 
 ```bash
-pipx install poetry
 poetry install
 ```
 
-### Create and Run Tests
+Create a config file `config.json` with the following structure:
 
-Create tests within the `tests` subfolder and
-  then run:
-
-```bash
-poetry run pytest
+```json
+{
+  "iris": [
+    "..."
+  ]
+}
 ```
 
-You can also test the `tap-narodnikatalog` CLI interface directly using `poetry run`:
+e.g. to download inflation data:
 
-```bash
-poetry run tap-narodnikatalog --help
+```json
+{
+  "iris": [
+    "https://data.gov.cz/zdroj/datové-sady/00025593/790624c7263aca615ce9ddd24e7db464"
+  ]
+}
 ```
 
-### Testing with [Meltano](https://www.meltano.com)
-
-_**Note:** This tap will work in any Singer environment and does not require Meltano.
-Examples here are for convenience and to streamline end-to-end orchestration scenarios._
-
-<!--
-Developer TODO:
-Your project comes with a custom `meltano.yml` project file already created. Open the `meltano.yml` and follow any "TODO" items listed in
-the file.
--->
-
-Next, install Meltano (if you haven't already) and any needed plugins:
+Then discover the catalog and download the data:
 
 ```bash
-# Install meltano
-pipx install meltano
-# Initialize meltano within this directory
-cd tap-narodnikatalog
-meltano install
+poetry run tap-narodnikatalog --config config.json --discover > catalog.json
+poetry run tap-narodnikatalog --config config.json --catalog catalog.json
 ```
 
-Now you can test and orchestrate using Meltano:
+### Usage with Meltano
+
+You can also use this tap with Meltano, a command-line tool for orchestrating Singer taps and targets.
+To do so, you can add this tap as a source to your Meltano project by running:
 
 ```bash
-# Test invocation:
-meltano invoke tap-narodnikatalog --version
-# OR run a test `elt` pipeline:
-meltano elt tap-narodnikatalog target-jsonl
+meltano add extractor tap-airtable --from-ref https://raw.githubusercontent.com/tomasvotava/tap-narodnikatalog/master/tap-narodnikatalog.yml
 ```
-
-### SDK Dev Guide
-
-See the [dev guide](https://sdk.meltano.com/en/latest/dev_guide.html) for more instructions on how to use the SDK to
-develop your own taps and targets.

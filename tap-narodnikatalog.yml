@@ -1,0 +1,21 @@
+capabilities:
+  - catalog
+  - discover
+description: Download datasets by their IRI from Czech National Catalogue (data.gov.cz).
+domain_url: https://data.gov.cz
+keywords:
+  - api
+  - meltano_sdk
+label: Narodni Katalog
+maintenance_status: active
+name: tap-narodnikatalog
+namespace: govdata
+pip_url: git+https://github.com/tomasvotava/tap-narodnikatalog.git
+quality: gold
+repo: https://github.com/tomasvotava/tap-narodnikatalog
+settings:
+  - description: An array of IRIs.
+    kind: array
+    label: IRIs
+    name: iris
+variant: tomasvotava
