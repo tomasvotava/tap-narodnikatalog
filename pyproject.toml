@@ -1,0 +1,74 @@
+[tool.poetry]
+name = "govdata"
+version = "0.0.1"
+description = "Singer tap for NarodniKatalog (data.gov.cz), built with the Meltano Singer SDK."
+readme = "README.md"
+authors = ["Tomas Votava <info@tomasvotava.eu>"]
+keywords = ["ELT", "NarodniKatalog", "data.gov.cz"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+license = "Apache-2.0"
+include = ["govdata/py.typed"]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
+singer-sdk = { version = "~=0.40.0", extras = [] }
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8"
+ruff = "^0.6.5"
+mypy = "^1.11.2"
+pre-commit = "^3.8.0"
+
+[tool.pytest.ini_options]
+testpaths = ["tests/"]
+addopts = ['-v']
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "D",
+    "E",
+    "F",
+    "B",
+    "I",
+    "N",
+    "UP",
+    "S",
+    "A",
+    "DTZ",
+    "PT",
+    "SIM",
+    "PTH",
+    "PD",
+    "RUF",
+    "T20",
+]
+
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests*/**/*.py" = ["S101"] # Allow asserts in tests
+"**/__init__.py" = ["D104"] # Allow missing docstrings in __init__ files
+
+[build-system]
+requires = ["poetry-core==1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+tap-narodnikatalog = 'govdata.tap:TapNarodniKatalog.cli'
