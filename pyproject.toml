@@ -17,9 +17,12 @@ license = "Apache-2.0"
 include = ["govdata/py.typed"]
 
 [tool.poetry.dependencies]
-python = ">=3.9"
+python = ">=3.9,<4.0"
 singer-sdk = { version = "~=0.40.0", extras = [] }
 
+gql = "^3.5.0"
+httpx = "^0.27.2"
+python-slugify = "^8.0.4"
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8"
 ruff = "^0.6.5"
