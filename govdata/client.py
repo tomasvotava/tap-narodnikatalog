@@ -1,5 +1,7 @@
 """data.gov.cz GraphQL client."""
 
+from __future__ import annotations
+
 import csv
 import datetime
 import logging
@@ -7,18 +9,16 @@ import tempfile
 from collections.abc import Callable, Generator, Iterable, Sequence
 from dataclasses import dataclass, field
 from email.policy import EmailPolicy
-from typing import TYPE_CHECKING, Any
+from typing import Any
 
 import httpx
 from gql import Client as GraphQLClient
 from gql import gql
 from gql.transport.httpx import HTTPXTransport
 from singer_sdk import typing as th
+from singer_sdk.helpers.types import Context
 from singer_sdk.streams import Stream
 from slugify import slugify
-
-if TYPE_CHECKING:
-    from singer_sdk.helpers.types import Context
 
 CSV_SNIFF_SAMPLE_SIZE = 8192
 
@@ -212,7 +212,7 @@ class NarodniKatalogStream(Stream):
     stream_iri: str
 
     @classmethod
-    def create_stream_from_iri(cls, iri: str) -> type["NarodniKatalogStream"]:
+    def create_stream_from_iri(cls, iri: str) -> type[NarodniKatalogStream]:
         """A stream factory for data sources.
 
         Creates a Stream type from IRI.
@@ -242,7 +242,7 @@ class NarodniKatalogStream(Stream):
 
         return _GeneratedStream
 
-    def get_records(self, context: "Context | None") -> Iterable[dict[str, Any]]:
+    def get_records(self, context: Context | None) -> Iterable[dict[str, Any]]:
         """Return a generator of record-type dictionary objects."""
         client = OpenDataGQLClient()
         dataset = client.get_dataset_by_iri(self.stream_iri)
