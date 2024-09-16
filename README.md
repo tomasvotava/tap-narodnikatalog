@@ -62,5 +62,5 @@ You can also use this tap with Meltano, a command-line tool for orchestrating Si
 To do so, you can add this tap as a source to your Meltano project by running:
 
 ```bash
-meltano add extractor tap-airtable --from-ref https://raw.githubusercontent.com/tomasvotava/tap-narodnikatalog/master/tap-narodnikatalog.yml
+meltano add extractor tap-narodnikatalog --from-ref https://raw.githubusercontent.com/tomasvotava/tap-narodnikatalog/master/tap-narodnikatalog.yml
 ```
