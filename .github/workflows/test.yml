@@ -31,3 +31,5 @@ jobs:
         run: poetry install
       - name: Run pre-commit
         run: poetry run pre-commit run -a
+      - name: Run pytest
+        run: poetry run pytest

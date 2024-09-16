@@ -1,9 +1,10 @@
 """data.gov.cz GraphQL client."""
 
 import csv
+import datetime
 import logging
 import tempfile
-from collections.abc import Generator, Iterable, Sequence
+from collections.abc import Callable, Generator, Iterable, Sequence
 from dataclasses import dataclass, field
 from email.policy import EmailPolicy
 from typing import TYPE_CHECKING, Any
@@ -69,6 +70,11 @@ COLUMN_TYPE_MAPPING: dict[str, type[th.JSONTypeHelper[Any]]] = {
     "string": th.StringType,
     "date": th.DateType,
     "number": th.NumberType,
+}
+
+COLUMN_TYPE_CAST_MAPPING: dict[str, Callable[[str], Any]] = {
+    "date": lambda s: datetime.datetime.strptime(s, "%Y-%m-%d").date(),  # noqa: DTZ007
+    "number": float,
 }
 
 
@@ -173,6 +179,12 @@ class OpenDataGQLClient:
     def retrieve_dataset(self, dataset: OpenDataDataset) -> Generator[dict[str, Any], None, None]:
         """Retrieve the dataset's data and yield it row by row."""
         logger.info(f"Retrieving data for dataset {dataset.iri}.")
+        schema = self.get_dataset_schema(dataset)
+        column_convertors: dict[str, Callable[[str], Any]] = {
+            column.name: COLUMN_TYPE_CAST_MAPPING[column.datatype]
+            for column in schema.columns
+            if column.datatype in COLUMN_TYPE_CAST_MAPPING
+        }
         with httpx.Client() as client:
             logger.info(f"GET {dataset.distribution[0].accessURL!r}.")
             response = client.get(dataset.distribution[0].accessURL)
@@ -185,7 +197,13 @@ class OpenDataGQLClient:
                 file.seek(0)
                 dialect = csv.Sniffer().sniff(response.text[:CSV_SNIFF_SAMPLE_SIZE])
                 reader = csv.DictReader(file, dialect=dialect)
-                yield from reader
+                yield from (
+                    {
+                        key: column_convertors[key](value) if key in column_convertors else value
+                        for key, value in line.items()
+                    }
+                    for line in reader
+                )
 
 
 class NarodniKatalogStream(Stream):

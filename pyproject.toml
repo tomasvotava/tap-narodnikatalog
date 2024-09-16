@@ -29,9 +29,16 @@ ruff = "^0.6.5"
 mypy = "^1.11.2"
 pre-commit = "^3.8.0"
 
+pytest-cov = "^5.0.0"
 [tool.pytest.ini_options]
 testpaths = ["tests/"]
-addopts = ['-v']
+addopts = [
+    '-v',
+    "--cov=govdata",
+    "--cov-report=xml:coverage.xml",
+    "--cov-report=json:coverage.json",
+    "--cov-report=term-missing",
+]
 
 [tool.mypy]
 python_version = "3.12"
